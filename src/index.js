@@ -11,6 +11,7 @@ const Root = () => {
     <Router history={hashHistory}>
       <Route path="/" component={App}>
         <IndexRoute component={ItemList} />
+        <Route path="pages/:id" component={ItemList} />
       </Route>
     </Router>
   );
