@@ -1,14 +1,20 @@
-.container {
+.gif-container {
   display: flex;
   flex-direction: column;
-  align-content: flex-start;
+  align-content: center;
   flex-wrap: wrap;
-  height: 500px;
+  height: 600px;
+  justify-content: center;
+
+  /* @media screen and(max-width: 500px) {
+    flex-direction: row;
+  } */
 }
 
-.container-item {
+.gif-item {
   align-self: center;
   border-bottom: none !important;
+  margin: 3px 6px;
 }
 
 .material-icons {
@@ -40,8 +46,16 @@ body {
   color: rgb(208, 209, 210);
 }
 
+.loading-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+}
+
 input {
   background-color: white !important;
   padding-left: 10px !important;
-  font-size: 14px;
+  font-size: 16px !important;
+  width: 100% !important;
+  font-family: 'interface', 'Helvetica Neue', helvetica, sans-serif;
 }
