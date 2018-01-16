@@ -16,9 +16,11 @@ export class ItemList extends Component {
     super(props);
 
     this.state = {
-      items: []
+      items: [],
+      searchValue: ''
     };
   }
+
   renderItems() {
     const { items } = this.state;
     return items.map(({ id, images, url }) => {
@@ -50,7 +52,12 @@ export class ItemList extends Component {
   render() {
     return (
       <div className="wrapper">
-        <h4>Top 10 Trending Gifs</h4>
+        <input
+          onChange={event => this.setState({ searchValue: event.target.value })}
+          value={this.state.searchValue}
+          placeholder={'Search GIFs'}
+        />
+        <div className="trending-title">Top Trending Gifs</div>
         <ul className="container">{this.renderItems()}</ul>
       </div>
     );
