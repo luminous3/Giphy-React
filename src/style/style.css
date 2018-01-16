@@ -1,11 +1,13 @@
-.collection {
+.container {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
+  flex-wrap: wrap;
 }
-/* .collection-item {
-  display: flex;
-  justify-content: space-between;
-} */
+
+.container-item {
+  align-self: center;
+  border-bottom: none !important;
+}
 
 .material-icons {
   cursor: pointer;
@@ -24,4 +26,12 @@
 
 .wrapper {
   margin: 40px 30px 20px 30px;
+}
+
+body {
+  background-color: black;
+}
+
+h4 {
+  color: white;
 }

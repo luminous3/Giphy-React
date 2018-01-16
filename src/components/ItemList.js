@@ -23,7 +23,7 @@ export class ItemList extends Component {
     const { items } = this.state;
     return items.map(({ id, images, url }) => {
       return (
-        <li key={id} className="collection-item">
+        <li key={id} className="container-item">
           <a href={url}>
             <img
               src={images.fixed_width_downsampled.url}
@@ -51,7 +51,7 @@ export class ItemList extends Component {
     return (
       <div className="wrapper">
         <h4>Top 10 Trending Gifs</h4>
-        <ul className="collection">{this.renderItems()}</ul>
+        <ul className="container">{this.renderItems()}</ul>
       </div>
     );
   }
