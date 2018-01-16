@@ -24,7 +24,7 @@ export class ItemList extends Component {
     return items.map(({ id, images, url }) => {
       return (
         <li key={id} className="container-item">
-          <a href={url}>
+          <a href={url} target="_blank">
             <img
               src={images.fixed_width_downsampled.url}
               className="preview"

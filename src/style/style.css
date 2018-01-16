@@ -1,7 +1,9 @@
 .container {
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
+  align-content: flex-start;
   flex-wrap: wrap;
+  height: 500px;
 }
 
 .container-item {
