@@ -7,7 +7,7 @@ export class Header extends Component {
       <nav>
         <div className="nav-wrapper">
           <Link to="/" className="brand-logo left">
-            Home
+            Giphly
           </Link>
         </div>
       </nav>
