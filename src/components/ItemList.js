@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router';
 import axios from 'axios';
 import _ from 'lodash';
+import Loader from './loader';
 
 const LIMIT = 10;
 // const API_KEY = 'o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF';
@@ -16,9 +17,21 @@ export class ItemList extends Component {
       items: [],
       searchValue: '',
       loading: false,
-      resultPage: props.params.id ? props.params.id : 1,
-      totalPages: 1
+      resultPage: props.params.id ? props.params.id : 1
     };
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.params.id != this.props.params.id) {
+      this.setState({
+        resultPage: newProps.params.id
+      });
+    }
+    if (!newProps.params.id) {
+      this.setState({
+        resultPage: 1
+      });
+    }
   }
 
   componentDidMount() {
@@ -27,7 +40,6 @@ export class ItemList extends Component {
         `https://api.giphy.com/v1/gifs/trending?api_key=o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF&limit=${LIMIT}&rating=G`
       )
       .then(res => {
-        console.log(res.data.data);
         this.setState({ items: res.data.data });
       });
   }
@@ -49,17 +61,19 @@ export class ItemList extends Component {
         `https://api.giphy.com/v1/gifs/search?api_key=o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF&q=${searchInput}&limit=25&offset=0&rating=G&lang=en`
       )
       .then(res => {
-        console.log(res.data.data);
         this.setState({
           loading: false,
-          items: res.data.data
+          items: res.data.data,
+          resultPage: 1
         });
       });
   }
 
   renderItems() {
     const { items, resultPage } = this.state;
-    return items.map(({ id, images, url }) => {
+    const lowRange = (resultPage - 1) * 10;
+    const newItems = items.slice(lowRange, lowRange + 10);
+    return newItems.map(({ id, images, url }) => {
       return (
         <li key={id} className="gif-item">
           <a href={url} target="_blank">
@@ -75,8 +89,7 @@ export class ItemList extends Component {
   }
 
   renderPagination() {
-    console.log(resultPage);
-    const { items, resultPage, totalPages } = this.state;
+    const { items, resultPage, totalPages, searchValue } = this.state;
     const pages = Math.ceil(items.length / LIMIT);
 
     const links = _.range(1, pages + 1).map(page => {
@@ -85,7 +98,7 @@ export class ItemList extends Component {
           key={'page' + page}
           className={page === resultPage ? 'active' : 'waves-effect'}
         >
-          <Link to={`/pages/${page}`}>{page}</Link>
+          <Link to={`/pages/${page}/${searchValue}`}>{page}</Link>
         </li>
       );
     });
@@ -93,13 +106,13 @@ export class ItemList extends Component {
     return (
       <ul className="pagination">
         <li className={resultPage === 1 ? 'disabled' : ''}>
-          <Link to={`/pages/${resultPage - 1}`}>
+          <Link to={`/pages/${resultPage - 1}/${searchValue}`}>
             <i className="material-icons">chevron_left</i>
           </Link>
         </li>
         {links}
         <li className={resultPage === pages + 1 ? 'disabled' : ''}>
-          <Link to={`/pages/${resultPage + 1}`}>
+          <Link to={`/pages/${resultPage + 1}/${searchValue}`}>
             <i className="material-icons">chevron_right</i>
           </Link>
         </li>
@@ -108,7 +121,10 @@ export class ItemList extends Component {
   }
 
   render() {
-    const { loading, items } = this.state;
+    const { loading, items, searchValue } = this.state;
+    const { query } = this.props.params;
+    console.log(this.props.params);
+
     return (
       <div className="wrapper">
         <input
@@ -118,27 +134,17 @@ export class ItemList extends Component {
           value={this.state.searchValue}
           placeholder={'Search All GIFs'}
         />
-        <div className="trending-title">Top Trending Gifs</div>
-        {loading && (
-          <div className="loading-container">
-            <div className="preloader-wrapper big active">
-              <div className="spinner-layer spinner-red-only">
-                <div className="circle-clipper left">
-                  <div className="circle" />
-                </div>
-                <div className="gap-patch">
-                  <div className="circle" />
-                </div>
-                <div className="circle-clipper right">
-                  <div className="circle" />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        <div className="trending-title">
+          {items.length === LIMIT
+            ? 'Top Trending Gifs'
+            : `Results for '${query}'`}
+        </div>
+        {loading && <Loader />}
         {!loading && (
           <div>
-            <ul className="gif-container">{this.renderItems()}</ul>
+            {items.length && (
+              <ul className="gif-container">{this.renderItems()}</ul>
+            )}
             {items.length > LIMIT && this.renderPagination()}
           </div>
         )}
