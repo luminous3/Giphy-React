@@ -2,11 +2,9 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import Loader from './Loader';
 import Pagination from './Pagination';
+import Item from './Item';
 
 const LIMIT = 10;
-// const API_KEY = 'o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF';
-// const RATING = 'G';
-// const GIPHY_BASE_URL = 'https://api.giphy.com/v1/gifs/';
 
 export class ItemList extends Component {
   constructor(props) {
@@ -21,25 +19,30 @@ export class ItemList extends Component {
   }
 
   componentWillReceiveProps(newProps) {
+    debugger;
     if (newProps.params.id != this.props.params.id) {
       this.setState({
         resultPage: newProps.params.id
       });
     }
-    if (!newProps.params.id) {
-      this.setState({
-        resultPage: 1
-      });
+    if (!!newProps.params.id) {
+      this.getTrending();
     }
   }
 
   componentDidMount() {
+    this.getTrending();
+  }
+
+  getTrending() {
     axios
       .get(
         `https://api.giphy.com/v1/gifs/trending?api_key=o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF&limit=${LIMIT}&rating=G`
       )
       .then(res => {
-        this.setState({ items: res.data.data });
+        this.setState({
+          items: res.data.data
+        });
       });
   }
 
@@ -73,23 +76,15 @@ export class ItemList extends Component {
     const lowRange = (resultPage - 1) * 10;
     const newItems = items.slice(lowRange, lowRange + 10);
     return newItems.map(({ id, images, url }) => {
-      return (
-        <li key={id} className="gif-item">
-          <a href={url} target="_blank">
-            <img
-              src={images.fixed_width_downsampled.url}
-              className="preview"
-              alt="Gif Preview"
-            />
-          </a>
-        </li>
-      );
+      return <Item id={id} url={url} images={images} />;
     });
   }
 
   render() {
     const { loading, items, searchValue, resultPage } = this.state;
-    const { query } = this.props.params;
+    const query = this.props.params.query
+      ? this.props.params.query
+      : searchValue;
 
     return (
       <div className="wrapper">
