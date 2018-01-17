@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router';
 import axios from 'axios';
-import _ from 'lodash';
-import Loader from './loader';
+import Loader from './Loader';
+import Pagination from './Pagination';
 
 const LIMIT = 10;
 // const API_KEY = 'o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF';
@@ -88,42 +87,9 @@ export class ItemList extends Component {
     });
   }
 
-  renderPagination() {
-    const { items, resultPage, totalPages, searchValue } = this.state;
-    const pages = Math.ceil(items.length / LIMIT);
-
-    const links = _.range(1, pages + 1).map(page => {
-      return (
-        <li
-          key={'page' + page}
-          className={page === resultPage ? 'active' : 'waves-effect'}
-        >
-          <Link to={`/pages/${page}/${searchValue}`}>{page}</Link>
-        </li>
-      );
-    });
-
-    return (
-      <ul className="pagination">
-        <li className={resultPage === 1 ? 'disabled' : ''}>
-          <Link to={`/pages/${resultPage - 1}/${searchValue}`}>
-            <i className="material-icons">chevron_left</i>
-          </Link>
-        </li>
-        {links}
-        <li className={resultPage === pages + 1 ? 'disabled' : ''}>
-          <Link to={`/pages/${resultPage + 1}/${searchValue}`}>
-            <i className="material-icons">chevron_right</i>
-          </Link>
-        </li>
-      </ul>
-    );
-  }
-
   render() {
-    const { loading, items, searchValue } = this.state;
+    const { loading, items, searchValue, resultPage } = this.state;
     const { query } = this.props.params;
-    console.log(this.props.params);
 
     return (
       <div className="wrapper">
@@ -145,7 +111,13 @@ export class ItemList extends Component {
             {items.length && (
               <ul className="gif-container">{this.renderItems()}</ul>
             )}
-            {items.length > LIMIT && this.renderPagination()}
+            {items.length > LIMIT && (
+              <Pagination
+                items={items}
+                resultPage={resultPage}
+                searchValue={searchValue}
+              />
+            )}
           </div>
         )}
       </div>
