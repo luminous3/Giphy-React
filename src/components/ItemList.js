@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import { connect, bindActionCreators } from 'react-redux';
+import { requestTrending } from '../redux/actions';
+// import axios from 'axios';
 import Loader from './Loader';
 import Pagination from './Pagination';
 import Item from './Item';
@@ -11,15 +13,14 @@ export class ItemList extends Component {
     super(props);
 
     this.state = {
-      items: [],
+      // items: [],
       searchValue: '',
-      loading: false,
+      // loading: false,
       resultPage: props.params.id ? props.params.id : 1
     };
   }
 
   componentWillReceiveProps(newProps) {
-    debugger;
     if (newProps.params.id != this.props.params.id) {
       this.setState({
         resultPage: newProps.params.id
@@ -30,21 +31,23 @@ export class ItemList extends Component {
     }
   }
 
-  componentDidMount() {
-    this.getTrending();
+  componentWillMount() {
+    debugger;
+    const { requestTrending } = this.props;
+    requestTrending();
   }
 
-  getTrending() {
-    axios
-      .get(
-        `https://api.giphy.com/v1/gifs/trending?api_key=o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF&limit=${LIMIT}&rating=G`
-      )
-      .then(res => {
-        this.setState({
-          items: res.data.data
-        });
-      });
-  }
+  // getTrending() {
+  //   axios
+  //     .get(
+  //       `https://api.giphy.com/v1/gifs/trending?api_key=o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF&limit=${LIMIT}&rating=G`
+  //     )
+  //     .then(res => {
+  //       this.setState({
+  //         items: res.data.data
+  //       });
+  //     });
+  // }
 
   handleKeyPress(event) {
     if (event.charCode === 13) {
@@ -54,13 +57,14 @@ export class ItemList extends Component {
   }
 
   handleSearch() {
-    const { searchInput } = this.state;
+    const { searchValue } = this.state;
     this.setState({
       loading: true
     });
+
     axios
       .get(
-        `https://api.giphy.com/v1/gifs/search?api_key=o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF&q=${searchInput}&limit=25&offset=0&rating=G&lang=en`
+        `https://api.giphy.com/v1/gifs/search?api_key=o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF&q=${searchValue}&limit=25&offset=0&rating=G&lang=en`
       )
       .then(res => {
         this.setState({
@@ -76,15 +80,15 @@ export class ItemList extends Component {
     const lowRange = (resultPage - 1) * 10;
     const newItems = items.slice(lowRange, lowRange + 10);
     return newItems.map(({ id, images, url }) => {
-      return <Item id={id} url={url} images={images} />;
+      return <Item key={id} url={url} images={images} />;
     });
   }
 
   render() {
-    const { loading, items, searchValue, resultPage } = this.state;
-    const query = this.props.params.query
-      ? this.props.params.query
-      : searchValue;
+    debugger;
+    // const { loading, items, searchValue, resultPage } = this.state;
+    const { resultPage, searchValue } = this.state;
+    const { items, isFetching, query } = this.props;
 
     return (
       <div className="wrapper">
@@ -92,16 +96,14 @@ export class ItemList extends Component {
           id="search"
           onKeyPress={this.handleKeyPress.bind(this)}
           onChange={event => this.setState({ searchValue: event.target.value })}
-          value={this.state.searchValue}
+          value={searchValue}
           placeholder={'Search All GIFs'}
         />
         <div className="trending-title">
-          {items.length === LIMIT
-            ? 'Top Trending Gifs'
-            : `Results for '${query}'`}
+          {query === '' ? 'Top Trending Gifs' : `Results for '${query}'`}
         </div>
-        {loading && <Loader />}
-        {!loading && (
+        {isFetching && <Loader />}
+        {!isFetching && (
           <div>
             {items.length && (
               <ul className="gif-container">{this.renderItems()}</ul>
@@ -120,4 +122,16 @@ export class ItemList extends Component {
   }
 }
 
-export default ItemList;
+function mapStateToProps(state) {
+  return {
+    items: state.items,
+    isFetching: state.isFetching,
+    query: state.query
+  };
+}
+
+const mapDispatchToProps = {
+  requestTrending
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ItemList);
