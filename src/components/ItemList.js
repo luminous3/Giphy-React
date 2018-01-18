@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { hashHistory } from 'react-router';
 import { connect, bindActionCreators } from 'react-redux';
 import { fetchTrending, fetchSearchResults } from '../redux/actions';
 import Loader from './Loader';
@@ -19,11 +20,21 @@ export class ItemList extends Component {
     fetchTrending();
   }
 
+  componentWillReceiveProps(newProps) {
+    console.log(newProps.params.id);
+    // if (!newProps.params.id) {
+    //   alert('no id');
+    // }
+  }
+
   handleKeyPress(event) {
     if (event.charCode === 13) {
       document.getElementById('search').blur();
-      const { fetchSearchResults } = this.props;
+      const { fetchSearchResults, query } = this.props;
       fetchSearchResults(this.state.searchValue);
+      hashHistory.push({
+        pathname: `/pages/1/${query}`
+      });
     }
   }
 
@@ -45,7 +56,7 @@ export class ItemList extends Component {
 
   render() {
     const { searchValue } = this.state;
-    const resultPage = this.props.params.id;
+    const resultPage = this.props.params.id ? this.props.params.id : 1;
     const { items, isFetching, query } = this.props;
 
     return (
@@ -66,12 +77,8 @@ export class ItemList extends Component {
             {items.length && (
               <ul className="gif-container">{this.renderItems()}</ul>
             )}
-            {resultPage && (
-              <Pagination
-                items={items}
-                resultPage={resultPage}
-                searchValue={searchValue}
-              />
+            {query && (
+              <Pagination items={items} resultPage={resultPage} query={query} />
             )}
           </div>
         )}

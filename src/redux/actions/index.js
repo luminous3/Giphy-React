@@ -42,7 +42,7 @@ export function fetchSearchResults(query) {
   return dispatch => {
     dispatch(requestSearchItems(query));
     return fetch(
-      `https://api.giphy.com/v1/gifs/search?api_key=o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF&q=${query}&limit=25&offset=0&rating=G&lang=en`
+      `https://api.giphy.com/v1/gifs/search?api_key=o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF&q=${query}&limit=100&offset=0&rating=G&lang=en`
     )
       .then(response => response.json())
       .then(json => {
