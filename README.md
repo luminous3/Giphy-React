@@ -18,11 +18,3 @@ npm run start
 
 This will start the webpack dev server and run the app at:
 [http://localhost:8000]
-
-## Testing
-
-To run tests:
-
-```
-npm run test
-```

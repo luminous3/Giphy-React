@@ -9,27 +9,20 @@
     "test": "jest"
   },
   "jest": {
-    "setupFiles": [
-      "./config/testSetup.js"
-    ]
+    "setupFiles": ["./config/testSetup.js"]
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.17.1",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.22.1",
     "babel-loader": "^7.1.2",
     "body-parser": "^1.16.0",
-    "cors": "^2.8.4",
     "cross-fetch": "^1.1.1",
     "css-loader": "^0.28.8",
-    "express": "^4.16.2",
     "html-webpack-plugin": "^2.26.0",
     "jest": "^22.0.6",
-    "keymirror": "^0.1.1",
     "lodash": "^4.17.4",
-    "nodemon": "^1.14.11",
     "react-dom": "16.2.0",
     "react-redux": "^5.0.6",
     "react-router": "^3.2.0",
