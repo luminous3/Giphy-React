@@ -40,13 +40,15 @@ export class ItemList extends Component {
 
   renderItems() {
     const { items } = this.props;
-    let newItems = items;
+    let newItems = [];
     const resultPage = this.props.params.id;
 
     if (resultPage) {
       // search result page
       const lowRange = (resultPage - 1) * 10;
       newItems = items.slice(lowRange, lowRange + 10);
+    } else {
+      newItems = items.slice(0, 10);
     }
 
     return newItems.map(({ id, images, url }) => {
