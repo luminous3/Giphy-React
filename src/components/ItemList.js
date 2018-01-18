@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect, bindActionCreators } from 'react-redux';
-import { requestTrending } from '../redux/actions';
-// import axios from 'axios';
+import { fetchTrending } from '../redux/actions';
 import Loader from './Loader';
 import Pagination from './Pagination';
 import Item from './Item';
@@ -13,41 +12,14 @@ export class ItemList extends Component {
     super(props);
 
     this.state = {
-      // items: [],
-      searchValue: '',
-      // loading: false,
-      resultPage: props.params.id ? props.params.id : 1
+      searchValue: ''
     };
   }
 
-  componentWillReceiveProps(newProps) {
-    if (newProps.params.id != this.props.params.id) {
-      this.setState({
-        resultPage: newProps.params.id
-      });
-    }
-    if (!!newProps.params.id) {
-      this.getTrending();
-    }
-  }
-
   componentWillMount() {
-    debugger;
-    const { requestTrending } = this.props;
-    requestTrending();
+    const { fetchTrending } = this.props;
+    fetchTrending();
   }
-
-  // getTrending() {
-  //   axios
-  //     .get(
-  //       `https://api.giphy.com/v1/gifs/trending?api_key=o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF&limit=${LIMIT}&rating=G`
-  //     )
-  //     .then(res => {
-  //       this.setState({
-  //         items: res.data.data
-  //       });
-  //     });
-  // }
 
   handleKeyPress(event) {
     if (event.charCode === 13) {
@@ -76,7 +48,8 @@ export class ItemList extends Component {
   }
 
   renderItems() {
-    const { items, resultPage } = this.state;
+    const { items } = this.props;
+    const resultPage = this.props.params.id;
     const lowRange = (resultPage - 1) * 10;
     const newItems = items.slice(lowRange, lowRange + 10);
     return newItems.map(({ id, images, url }) => {
@@ -85,9 +58,8 @@ export class ItemList extends Component {
   }
 
   render() {
-    debugger;
-    // const { loading, items, searchValue, resultPage } = this.state;
-    const { resultPage, searchValue } = this.state;
+    const { searchValue } = this.state;
+    const resultPage = this.props.params.id;
     const { items, isFetching, query } = this.props;
 
     return (
@@ -131,7 +103,7 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  requestTrending
+  fetchTrending
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemList);
