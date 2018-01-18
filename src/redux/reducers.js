@@ -1,4 +1,4 @@
-import { REQUEST_TRENDING, RECEIVE_TRENDING } from './actions';
+import { REQUEST_ITEMS, RECEIVE_ITEMS, REQUEST_SEARCH_ITEMS } from './actions';
 
 function gifs(
   state = {
@@ -9,16 +9,20 @@ function gifs(
   action
 ) {
   switch (action.type) {
-    case REQUEST_TRENDING:
+    case REQUEST_ITEMS:
       return Object.assign({}, state, {
         isFetching: true
       });
-    case RECEIVE_TRENDING:
+    case RECEIVE_ITEMS:
       return Object.assign({}, state, {
         isFetching: false,
         items: action.items,
-        lastUpdated: action.receivedAt,
-        query: ''
+        lastUpdated: action.receivedAt
+      });
+    case REQUEST_SEARCH_ITEMS:
+      return Object.assign({}, state, {
+        isFetching: true,
+        query: action.query
       });
     default:
       return state;

@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { connect, bindActionCreators } from 'react-redux';
-import { fetchTrending } from '../redux/actions';
+import { fetchTrending, fetchSearchResults } from '../redux/actions';
 import Loader from './Loader';
 import Pagination from './Pagination';
 import Item from './Item';
-
-const LIMIT = 10;
 
 export class ItemList extends Component {
   constructor(props) {
@@ -24,34 +22,22 @@ export class ItemList extends Component {
   handleKeyPress(event) {
     if (event.charCode === 13) {
       document.getElementById('search').blur();
-      this.handleSearch();
+      const { fetchSearchResults } = this.props;
+      fetchSearchResults(this.state.searchValue);
     }
-  }
-
-  handleSearch() {
-    const { searchValue } = this.state;
-    this.setState({
-      loading: true
-    });
-
-    axios
-      .get(
-        `https://api.giphy.com/v1/gifs/search?api_key=o0WkAgsV8Yu0S7pjGI1Bk594LxB49hGF&q=${searchValue}&limit=25&offset=0&rating=G&lang=en`
-      )
-      .then(res => {
-        this.setState({
-          loading: false,
-          items: res.data.data,
-          resultPage: 1
-        });
-      });
   }
 
   renderItems() {
     const { items } = this.props;
+    let newItems = items;
     const resultPage = this.props.params.id;
-    const lowRange = (resultPage - 1) * 10;
-    const newItems = items.slice(lowRange, lowRange + 10);
+
+    if (resultPage) {
+      // search result page
+      const lowRange = (resultPage - 1) * 10;
+      newItems = items.slice(lowRange, lowRange + 10);
+    }
+
     return newItems.map(({ id, images, url }) => {
       return <Item key={id} url={url} images={images} />;
     });
@@ -80,7 +66,7 @@ export class ItemList extends Component {
             {items.length && (
               <ul className="gif-container">{this.renderItems()}</ul>
             )}
-            {items.length > LIMIT && (
+            {resultPage && (
               <Pagination
                 items={items}
                 resultPage={resultPage}
@@ -103,7 +89,8 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = {
-  fetchTrending
+  fetchTrending,
+  fetchSearchResults
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ItemList);
