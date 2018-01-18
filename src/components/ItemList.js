@@ -20,21 +20,14 @@ export class ItemList extends Component {
     fetchTrending();
   }
 
-  componentWillReceiveProps(newProps) {
-    console.log(newProps.params.id);
-    // if (!newProps.params.id) {
-    //   alert('no id');
-    // }
-  }
-
   handleKeyPress(event) {
     if (event.charCode === 13) {
       document.getElementById('search').blur();
       const { fetchSearchResults, query } = this.props;
+      // hashHistory.push({
+      //   pathname: `/pages/1/${query}`
+      // });
       fetchSearchResults(this.state.searchValue);
-      hashHistory.push({
-        pathname: `/pages/1/${query}`
-      });
     }
   }
 

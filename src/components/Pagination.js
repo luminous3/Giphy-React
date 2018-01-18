@@ -6,13 +6,11 @@ export class Pagination extends Component {
   render() {
     const { items, resultPage, query } = this.props;
     const pages = Math.ceil(items.length / 10);
-
     const links = _.range(1, pages + 1).map(page => {
-      console.log(page);
       return (
         <li
           key={'page' + page}
-          className={page === resultPage ? 'active' : 'waves-effect'}
+          className={page == resultPage ? 'active' : 'waves-effect'}
         >
           <Link to={`/pages/${page}/${query}`}>{page}</Link>
         </li>
@@ -20,7 +18,6 @@ export class Pagination extends Component {
     });
 
     const linkId = parseInt(resultPage);
-
     return (
       <ul className="pagination">
         <li className={resultPage === 1 ? 'disabled' : ''}>
